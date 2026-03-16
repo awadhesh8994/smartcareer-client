@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Sparkles, ArrowRight, User, Mail, Lock, CheckCircle2, Building2, GraduationCap } from 'lucide-react'
 import { useAuthStore } from '@store/authStore'
-import { authService } from '@services/index'
+import api from '@services/axiosInstance'
 import toast from 'react-hot-toast'
 import clsx from 'clsx'
 
@@ -11,9 +11,9 @@ const STRENGTH_COLORS = ['', 'bg-red-400', 'bg-amber-400', 'bg-yellow-400', 'bg-
 
 function getStrength(pw) {
   let s = 0
-  if (pw.length >= 6) s++
-  if (/[A-Z]/.test(pw)) s++
-  if (/[0-9]/.test(pw)) s++
+  if (pw.length >= 6)          s++
+  if (/[A-Z]/.test(pw))        s++
+  if (/[0-9]/.test(pw))        s++
   if (/[^A-Za-z0-9]/.test(pw)) s++
   return s
 }
@@ -25,17 +25,19 @@ export default function Register() {
   const [errors, setErrors]   = useState({})
   const [agreed, setAgreed]   = useState(false)
   const [pending, setPending] = useState(false)
+  const [loading, setLoading] = useState(false)
+
   const { register, isLoading } = useAuthStore()
-  const navigate              = useNavigate()
-  const strength              = getStrength(form.password)
+  const navigate                = useNavigate()
+  const strength                = getStrength(form.password)
 
   const validate = () => {
     const e = {}
-    if (!form.name.trim())  e.name     = 'Full name is required'
-    if (!form.email)        e.email    = 'Email is required'
+    if (!form.name.trim())   e.name     = 'Full name is required'
+    if (!form.email)          e.email    = 'Email is required'
     else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Invalid email address'
-    if (!form.password)     e.password = 'Password is required'
-    else if (form.password.length < 6) e.password = 'At least 6 characters required'
+    if (!form.password)       e.password = 'Password is required'
+    else if (form.password.length < 6)  e.password = 'At least 6 characters required'
     if (selectedRole === 'recruiter' && !form.companyName.trim())
       e.companyName = 'Company name is required'
     if (!agreed) e.agreed = 'You must agree to the terms'
@@ -48,18 +50,25 @@ export default function Register() {
     if (!validate()) return
 
     if (selectedRole === 'recruiter') {
-      // Recruiter uses direct API call since they get pending status (no token)
+      setLoading(true)
       try {
-        const { data } = await authService.register({
-          name: form.name, email: form.email,
-          password: form.password, role: 'recruiter',
+        const { data } = await api.post('/auth/register', {
+          name:        form.name,
+          email:       form.email,
+          password:    form.password,
+          role:        'recruiter',
           companyName: form.companyName,
         })
         if (data.pending) {
           setPending(true)
+        } else {
+          toast.error('Unexpected response from server')
         }
       } catch (err) {
-        toast.error(err.response?.data?.message || 'Registration failed')
+        const msg = err.response?.data?.message || 'Registration failed. Please try again.'
+        toast.error(msg)
+      } finally {
+        setLoading(false)
       }
       return
     }
@@ -68,13 +77,15 @@ export default function Register() {
     const res = await register(form.name, form.email, form.password)
     if (res.success) {
       toast.success('Account created! Welcome to CareerAI 🎉')
-      navigate('/dashboard')
+      navigate('/onboarding')
     } else {
       toast.error(res.message || 'Registration failed')
     }
   }
 
-  // Pending approval screen for recruiters
+  const busy = loading || isLoading
+
+  // ── Pending screen ────────────────────────────────────────────
   if (pending) return (
     <div className="min-h-screen flex items-center justify-center bg-surface-50 dark:bg-surface-900 p-4">
       <div className="card p-10 max-w-md w-full text-center">
@@ -82,13 +93,17 @@ export default function Register() {
           <CheckCircle2 size={30} className="text-white" />
         </div>
         <h2 className="font-display text-2xl font-700 text-surface-900 dark:text-white mb-3">
-          Application Submitted!
+          Application Submitted! 🎉
         </h2>
         <p className="text-surface-500 text-sm leading-relaxed mb-2">
-          Your recruiter account for <strong className="text-surface-700 dark:text-surface-300">{form.companyName}</strong> has been submitted for review.
+          Your recruiter account for{' '}
+          <strong className="text-surface-700 dark:text-surface-300">{form.companyName}</strong>{' '}
+          has been submitted for review.
         </p>
         <p className="text-surface-500 text-sm leading-relaxed mb-6">
-          Our admin team will review your application and notify you at <strong className="text-surface-700 dark:text-surface-300">{form.email}</strong> once approved. This usually takes 24–48 hours.
+          Our team will review and notify you at{' '}
+          <strong className="text-surface-700 dark:text-surface-300">{form.email}</strong>{' '}
+          once approved. This usually takes 24–48 hours.
         </p>
         <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl p-4 mb-6">
           <p className="text-xs text-amber-700 dark:text-amber-300">
@@ -127,20 +142,20 @@ export default function Register() {
           <p className="text-white/75 text-base leading-relaxed">
             {selectedRole === 'recruiter'
               ? 'Post jobs, get AI-ranked candidates, and manage your hiring pipeline — all in one place.'
-              : 'Join thousands of students using CareerAI to discover strengths, build skills, and land dream jobs.'}
+              : 'Join thousands of students and professionals using CareerAI across Technology, Law, Finance, Design, Healthcare and more.'}
           </p>
           <div className="grid grid-cols-2 gap-4">
-            {selectedRole === 'recruiter' ? [
-              { value: 'AI Ranking', label: 'Smart candidates' },
-              { value: 'Fast',       label: 'Quick approvals' },
-              { value: 'Free',       label: 'To get started' },
-              { value: '10K+',       label: 'Student pool' },
+            {(selectedRole === 'recruiter' ? [
+              { value: 'AI',     label: 'Candidate ranking' },
+              { value: 'Fast',   label: 'Quick approvals' },
+              { value: 'Free',   label: 'To get started' },
+              { value: '10K+',   label: 'Student pool' },
             ] : [
-              { value: '10K+', label: 'Students guided' },
-              { value: '95%',  label: 'Placement rate' },
-              { value: '50+',  label: 'Career paths' },
-              { value: 'Free', label: 'To get started' },
-            ].map(({ value, label }) => (
+              { value: '10K+',   label: 'Users guided' },
+              { value: '10+',    label: 'Career fields' },
+              { value: '50+',    label: 'Career paths' },
+              { value: 'Free',   label: 'To get started' },
+            ]).map(({ value, label }) => (
               <div key={label} className="bg-white/15 rounded-xl p-4">
                 <div className="font-display text-2xl font-700 text-white">{value}</div>
                 <div className="text-white/70 text-xs mt-0.5">{label}</div>
@@ -154,6 +169,8 @@ export default function Register() {
       {/* Right panel */}
       <div className="flex-1 flex items-center justify-center p-6 bg-surface-50 dark:bg-surface-900 overflow-y-auto">
         <div className="w-full max-w-md py-8">
+
+          {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2 mb-8">
             <div className="w-8 h-8 rounded-lg gradient-brand-bg flex items-center justify-center">
               <Sparkles size={15} className="text-white" />
@@ -180,7 +197,9 @@ export default function Register() {
             >
               <GraduationCap size={22} className={selectedRole === 'student' ? 'text-navy-600' : 'text-surface-400'} />
               <div>
-                <p className={clsx('text-sm font-600', selectedRole === 'student' ? 'text-navy-600 dark:text-navy-300' : 'text-surface-600 dark:text-surface-400')}>Student</p>
+                <p className={clsx('text-sm font-600', selectedRole === 'student' ? 'text-navy-600 dark:text-navy-300' : 'text-surface-600 dark:text-surface-400')}>
+                  Student / Professional
+                </p>
                 <p className="text-xs text-surface-400">Find your career path</p>
               </div>
             </button>
@@ -196,7 +215,9 @@ export default function Register() {
             >
               <Building2 size={22} className={selectedRole === 'recruiter' ? 'text-teal-600' : 'text-surface-400'} />
               <div>
-                <p className={clsx('text-sm font-600', selectedRole === 'recruiter' ? 'text-teal-700 dark:text-teal-300' : 'text-surface-600 dark:text-surface-400')}>Recruiter</p>
+                <p className={clsx('text-sm font-600', selectedRole === 'recruiter' ? 'text-teal-700 dark:text-teal-300' : 'text-surface-600 dark:text-surface-400')}>
+                  Recruiter
+                </p>
                 <p className="text-xs text-surface-400">Hire top talent</p>
               </div>
             </button>
@@ -212,11 +233,11 @@ export default function Register() {
             </div>
           )}
 
-          {/* Google OAuth — only for students */}
+          {/* Google OAuth — students only */}
           {selectedRole === 'student' && (
             <>
               <a
-                href={`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/auth/google`}
+                href={`${import.meta.env.VITE_API_URL || 'https://smartcareer-api.onrender.com/api'}/auth/google`}
                 className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-800 text-surface-700 dark:text-surface-300 text-sm font-medium hover:bg-surface-50 dark:hover:bg-surface-700 transition-all mb-4"
               >
                 <svg viewBox="0 0 24 24" width="18" height="18">
@@ -235,12 +256,19 @@ export default function Register() {
             </>
           )}
 
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">Full name</label>
               <div className="relative">
                 <User size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-surface-400" />
-                <input type="text" placeholder="Your full name" value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} className={clsx('input pl-9', errors.name && 'border-red-400')} />
+                <input
+                  type="text"
+                  placeholder="Your full name"
+                  value={form.name}
+                  onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+                  className={clsx('input pl-9', errors.name && 'border-red-400')}
+                />
               </div>
               {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
             </div>
@@ -250,7 +278,13 @@ export default function Register() {
                 <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">Company name</label>
                 <div className="relative">
                   <Building2 size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-surface-400" />
-                  <input type="text" placeholder="Your company name" value={form.companyName} onChange={e => setForm(p => ({ ...p, companyName: e.target.value }))} className={clsx('input pl-9', errors.companyName && 'border-red-400')} />
+                  <input
+                    type="text"
+                    placeholder="Your company name"
+                    value={form.companyName}
+                    onChange={e => setForm(p => ({ ...p, companyName: e.target.value }))}
+                    className={clsx('input pl-9', errors.companyName && 'border-red-400')}
+                  />
                 </div>
                 {errors.companyName && <p className="text-xs text-red-500 mt-1">{errors.companyName}</p>}
               </div>
@@ -260,7 +294,13 @@ export default function Register() {
               <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">Email address</label>
               <div className="relative">
                 <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-surface-400" />
-                <input type="email" placeholder="you@example.com" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} className={clsx('input pl-9', errors.email && 'border-red-400')} />
+                <input
+                  type="email"
+                  placeholder="you@example.com"
+                  value={form.email}
+                  onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+                  className={clsx('input pl-9', errors.email && 'border-red-400')}
+                />
               </div>
               {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
             </div>
@@ -269,7 +309,13 @@ export default function Register() {
               <label className="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">Password</label>
               <div className="relative">
                 <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-surface-400" />
-                <input type={showPass ? 'text' : 'password'} placeholder="Min. 6 characters" value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))} className={clsx('input pl-9 pr-10', errors.password && 'border-red-400')} />
+                <input
+                  type={showPass ? 'text' : 'password'}
+                  placeholder="Min. 6 characters"
+                  value={form.password}
+                  onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
+                  className={clsx('input pl-9 pr-10', errors.password && 'border-red-400')}
+                />
                 <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-surface-400">
                   {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
@@ -288,7 +334,10 @@ export default function Register() {
             </div>
 
             <label className="flex items-start gap-2.5 cursor-pointer">
-              <div onClick={() => setAgreed(!agreed)} className={clsx('w-4 h-4 mt-0.5 rounded border flex items-center justify-center shrink-0 transition-all', agreed ? 'bg-navy-600 border-navy-600' : 'border-surface-300 dark:border-surface-600')}>
+              <div
+                onClick={() => setAgreed(!agreed)}
+                className={clsx('w-4 h-4 mt-0.5 rounded border flex items-center justify-center shrink-0 transition-all', agreed ? 'bg-navy-600 border-navy-600' : 'border-surface-300 dark:border-surface-600')}
+              >
                 {agreed && <CheckCircle2 size={12} className="text-white" />}
               </div>
               <span className="text-sm text-surface-600 dark:text-surface-400">
@@ -297,8 +346,12 @@ export default function Register() {
             </label>
             {errors.agreed && <p className="text-xs text-red-500">{errors.agreed}</p>}
 
-            <button type="submit" disabled={isLoading} className={clsx('w-full py-3 rounded-xl text-base font-medium justify-center flex items-center gap-2 disabled:opacity-60', selectedRole === 'recruiter' ? 'btn-accent' : 'btn-primary')}>
-              {isLoading
+            <button
+              type="submit"
+              disabled={busy}
+              className="w-full btn-primary py-3 rounded-xl text-base font-medium justify-center flex items-center gap-2 disabled:opacity-60"
+            >
+              {busy
                 ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 : selectedRole === 'recruiter' ? <Building2 size={16} /> : <ArrowRight size={16} />
               }

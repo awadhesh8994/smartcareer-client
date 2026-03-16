@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom'
 import {
   Sparkles, ArrowRight, BrainCircuit, Map, FileText,
   BarChart3, MessageSquare, Users, CheckCircle2, Star,
-  Zap, Target, TrendingUp, BookOpen, Award, ChevronRight
+  Zap, Target, TrendingUp, BookOpen, Award, ChevronRight,
+  Briefcase, Mic, Building2
 } from 'lucide-react'
 import clsx from 'clsx'
 
@@ -13,77 +14,93 @@ const FEATURES = [
     icon: BrainCircuit,
     color: 'navy',
     title: 'AI Skill Assessment',
-    desc: 'Adaptive MCQ engine identifies your strengths and gaps across DSA, Web Dev, ML, and more — with personalized recommendations.',
+    desc: 'Adaptive quizzes across 12+ domains — from DSA and Finance to Law, Design, and Healthcare. Know exactly where you stand.',
   },
   {
     icon: Map,
     color: 'teal',
-    title: 'Career Roadmap Generator',
-    desc: 'Tell us your dream role. Our AI builds a step-by-step milestone roadmap with curated resources and realistic timelines.',
+    title: 'Personalised Roadmap',
+    desc: 'Tell us your target role. AI builds a milestone-based learning path with curated resources — for any field, any level.',
   },
   {
     icon: FileText,
     color: 'violet',
     title: 'AI Resume Builder',
-    desc: 'ATS score checker, bullet-point improver, keyword optimizer, and one-click PDF export — all in a beautiful drag-and-drop editor.',
+    desc: 'ATS scorer, bullet-point improver, and keyword optimiser. Whether you are a lawyer, designer, or engineer — we have you covered.',
   },
   {
-    icon: BarChart3,
+    icon: Briefcase,
     color: 'teal',
-    title: 'Career Analytics',
-    desc: 'Track skill growth, application funnels, career health score, and peer benchmarking — all in one powerful dashboard.',
+    title: 'Job Matching Engine',
+    desc: 'AI scores every job against your profile and skills. Browse matched opportunities and track all applications in one place.',
+  },
+  {
+    icon: Mic,
+    color: 'violet',
+    title: 'AI Mock Interview',
+    desc: 'Role-specific interview practice with real-time AI feedback on every answer. Build confidence before the real thing.',
   },
   {
     icon: MessageSquare,
-    color: 'violet',
-    title: 'AI Career Chatbot',
-    desc: 'Your always-on career advisor. Ask anything — resume reviews, interview tips, course suggestions, career switches.',
-  },
-  {
-    icon: Users,
     color: 'navy',
-    title: 'Peer & Mentor Network',
-    desc: 'Connect with verified mentors, join study groups, and engage in domain-specific forums. Learning is better together.',
+    title: 'AI Career Advisor',
+    desc: 'Your always-on career advisor — specialised for your field. Ask anything about career switches, certifications, or growth paths.',
   },
 ]
 
 const HOW_IT_WORKS = [
-  { step: '01', title: 'Create your profile', desc: 'Add your education, skills, and career goals. Takes under 3 minutes.' },
-  { step: '02', title: 'Take skill assessment', desc: 'Our adaptive AI quiz identifies exactly where you stand in your chosen domain.' },
-  { step: '03', title: 'Get your roadmap', desc: 'Claude AI generates a personalised milestone-based learning path just for you.' },
-  { step: '04', title: 'Build & apply', desc: 'Create ATS-optimised resumes, track applications, and land your dream role.' },
+  { step: '01', title: 'Sign up and choose your field', desc: 'Tell us who you are — student, professional, or career switcher. Pick from Technology, Law, Finance, Design, Healthcare, and 7 more fields.' },
+  { step: '02', title: 'Complete your 4-step onboarding', desc: 'Set your goal, target role, and experience level. Takes under 2 minutes and personalises everything just for you.' },
+  { step: '03', title: 'Take your first skill assessment', desc: 'Our AI quiz — or a custom topic you type in — identifies exactly where you stand and what to focus on.' },
+  { step: '04', title: 'Get your roadmap and grow', desc: 'AI generates your personalised learning path. Track progress, build your resume, practise interviews, and land your dream role.' },
+]
+
+const FIELDS = [
+  { icon: '💻', label: 'Technology',            roles: 'SDE · Data Scientist · DevOps' },
+  { icon: '⚖️', label: 'Law & Legal',           roles: 'Corporate Lawyer · IP Attorney' },
+  { icon: '💰', label: 'Finance & Accounting',  roles: 'CA · Investment Banker · CFA' },
+  { icon: '🎨', label: 'Arts & Design',         roles: 'UX Designer · Art Director' },
+  { icon: '📊', label: 'Business & Management', roles: 'Product Manager · Consultant' },
+  { icon: '🏥', label: 'Healthcare & Medicine', roles: 'Doctor · Clinical Researcher' },
+  { icon: '📢', label: 'Marketing & Media',     roles: 'Brand Manager · Growth Marketer' },
+  { icon: '🔬', label: 'Science & Research',    roles: 'Research Scientist · Lab Analyst' },
+  { icon: '⚙️', label: 'Engineering (Non-CS)',  roles: 'Mechanical · Civil · Electrical' },
+  { icon: '📚', label: 'Education',             roles: 'Curriculum Designer · EdTech' },
 ]
 
 const TESTIMONIALS = [
   {
-    name: 'Priya Sharma',
-    role: 'SDE @ Google',
+    name:   'Priya Sharma',
+    role:   'Software Engineer @ Google',
     avatar: 'PS',
-    color: 'navy',
-    text: 'CareerAI\'s roadmap and mock assessments helped me crack Google in 4 months. The AI chatbot felt like having a personal career coach.',
-    stars: 5,
+    color:  'navy',
+    field:  'Technology',
+    text:   'The AI roadmap and mock assessments helped me crack Google in 4 months. Felt like having a personal career coach available 24/7.',
+    stars:  5,
   },
   {
-    name: 'Rahul Verma',
-    role: 'Data Analyst @ Flipkart',
-    avatar: 'RV',
-    color: 'teal',
-    text: 'The resume ATS scorer was a game-changer. My shortlist rate jumped from 10% to 65% after optimising with CareerAI.',
-    stars: 5,
+    name:   'Rohan Mehta',
+    role:   'Associate @ Trilegal',
+    avatar: 'RM',
+    color:  'violet',
+    field:  'Law & Legal',
+    text:   'First platform I found that actually understands law careers. The interview prep for corporate law roles was spot-on and incredibly useful.',
+    stars:  5,
   },
   {
-    name: 'Ananya Singh',
-    role: 'ML Engineer @ Microsoft',
+    name:   'Ananya Singh',
+    role:   'Financial Analyst @ Goldman Sachs',
     avatar: 'AS',
-    color: 'violet',
-    text: 'I loved the skill gap analysis. It told me exactly what to learn, in what order, with the best free resources. Absolutely brilliant.',
-    stars: 5,
+    color:  'teal',
+    field:  'Finance',
+    text:   'The skill gap analysis for my CFA prep was brilliant. It told me exactly what to study, in what order, with the best free resources.',
+    stars:  5,
   },
 ]
 
 const STATS = [
-  { value: '10,000+', label: 'Users guided', icon: Users },
-  { value: '95%',     label: 'Placement rate',  icon: Target },
+  { value: '10,000+', label: 'Users guided',    icon: Users },
+  { value: '10+',     label: 'Career fields',   icon: Target },
   { value: '50+',     label: 'Career paths',    icon: Map },
   { value: '4.9/5',   label: 'Average rating',  icon: Star },
 ]
@@ -97,7 +114,7 @@ function FeatureCard({ icon: Icon, color, title, desc }) {
     violet: 'bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-300',
   }
   return (
-    <div className="card p-6 hover:shadow-lifted hover:-translate-y-1 transition-all duration-300 group cursor-default">
+    <div className="card p-6 hover:shadow-lifted hover:-translate-y-1 transition-all duration-300 cursor-default">
       <div className={clsx('w-11 h-11 rounded-xl flex items-center justify-center mb-4', colorMap[color])}>
         <Icon size={22} />
       </div>
@@ -124,12 +141,8 @@ function StepCard({ step, title, desc, isLast }) {
   )
 }
 
-function TestimonialCard({ name, role, avatar, color, text, stars }) {
-  const colorMap = {
-    navy:   'bg-navy-600',
-    teal:   'bg-teal-600',
-    violet: 'bg-violet-600',
-  }
+function TestimonialCard({ name, role, avatar, color, field, text, stars }) {
+  const colorMap = { navy: 'bg-navy-600', teal: 'bg-teal-600', violet: 'bg-violet-600' }
   return (
     <div className="card p-6 hover:shadow-lifted transition-all duration-300">
       <div className="flex items-start gap-3 mb-4">
@@ -139,6 +152,7 @@ function TestimonialCard({ name, role, avatar, color, text, stars }) {
         <div>
           <div className="font-medium text-sm text-surface-900 dark:text-white">{name}</div>
           <div className="text-xs text-surface-500">{role}</div>
+          <span className="text-2xs bg-surface-100 dark:bg-surface-700 text-surface-500 px-2 py-0.5 rounded-full mt-1 inline-block">{field}</span>
         </div>
         <div className="ml-auto flex gap-0.5">
           {[...Array(stars)].map((_, i) => (
@@ -151,16 +165,13 @@ function TestimonialCard({ name, role, avatar, color, text, stars }) {
   )
 }
 
-// ── Main Landing Page ─────────────────────────────────────────────
-
+// ── Main ──────────────────────────────────────────────────────────
 export default function LandingPage() {
   return (
     <div className="overflow-hidden">
 
-      {/* ── HERO ──────────────────────────────────────────────────── */}
+      {/* ── HERO ──────────────────────────────────────────────── */}
       <section className="relative min-h-screen flex items-center pt-16 bg-gradient-to-br from-surface-50 via-white to-blue-50/50 dark:from-surface-900 dark:via-surface-900 dark:to-navy-900/30">
-
-        {/* Background geometric shapes */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-gradient-to-br from-navy-600/10 to-teal-600/10 blur-3xl" />
           <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-gradient-to-br from-violet-600/10 to-navy-600/10 blur-3xl" />
@@ -171,72 +182,62 @@ export default function LandingPage() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
 
-            {/* Left: Text */}
+            {/* Left */}
             <div className="animate-fade-up">
-              {/* Badge */}
               <div className="inline-flex items-center gap-2 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-full px-4 py-2 text-xs font-medium text-navy-600 dark:text-navy-300 mb-8 shadow-card">
                 <div className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
                 <Sparkles size={12} />
                 Powered by Groq AI · Free for everyone
               </div>
 
-              {/* Headline */}
               <h1 className="font-display text-5xl lg:text-6xl font-800 leading-tight text-surface-900 dark:text-white mb-6 text-balance">
-                Your AI-powered{' '}
-                <span className="gradient-text">career companion</span>{' '}
-                from college to career
+                Your AI career companion —{' '}
+                <span className="gradient-text">every field,</span>{' '}
+                every goal
               </h1>
 
-              {/* Subtext */}
-              <p className="text-lg text-surface-500 dark:text-surface-400 leading-relaxed mb-10 max-w-xl">
-                Assess your skills, generate a personalised roadmap, build ATS-beating resumes, and get AI career guidance — whether you're a fresher or a 10-year veteran switching careers.
+              <p className="text-lg text-surface-500 dark:text-surface-400 leading-relaxed mb-6 max-w-xl">
+                Whether you're a law student, a medical professional, a tech engineer, or a finance analyst — CareerAI gives you a personalised roadmap, skill assessments, AI interview practice, and a career advisor tailored to <strong className="text-surface-700 dark:text-surface-300">your</strong> field.
               </p>
 
-              {/* CTA buttons */}
+              {/* Field pills */}
+              <div className="flex flex-wrap gap-2 mb-10">
+                {['💻 Tech', '⚖️ Law', '💰 Finance', '🎨 Design', '🏥 Healthcare', '📊 Business', '+ more'].map(f => (
+                  <span key={f} className="px-3 py-1 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-full text-xs text-surface-600 dark:text-surface-400 font-medium shadow-card">
+                    {f}
+                  </span>
+                ))}
+              </div>
+
               <div className="flex flex-wrap items-center gap-4 mb-12">
-                <Link
-                  to="/register"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl gradient-brand-bg text-white font-medium text-base shadow-glow hover:opacity-90 hover:scale-105 transition-all duration-200"
-                >
-                  Start for free
-                  <ArrowRight size={18} />
+                <Link to="/register" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl gradient-brand-bg text-white font-medium text-base shadow-glow hover:opacity-90 hover:scale-105 transition-all duration-200">
+                  Start for free <ArrowRight size={18} />
                 </Link>
-                <a
-                  href="#how-it-works"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-700 dark:text-surface-300 font-medium text-base hover:bg-surface-50 dark:hover:bg-surface-700 transition-all duration-200 shadow-card"
-                >
-                  See how it works
-                  <ChevronRight size={16} />
+                <a href="#how-it-works" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-700 dark:text-surface-300 font-medium text-base hover:bg-surface-50 dark:hover:bg-surface-700 transition-all duration-200 shadow-card">
+                  See how it works <ChevronRight size={16} />
                 </a>
               </div>
 
-              {/* Social proof */}
               <div className="flex items-center gap-4">
                 <div className="flex -space-x-2">
-                  {['PS', 'RV', 'AS', 'MK', 'NT'].map((init, i) => (
-                    <div
-                      key={i}
-                      className="w-8 h-8 rounded-full border-2 border-white dark:border-surface-900 gradient-brand-bg flex items-center justify-center text-white text-xs font-600"
-                    >
+                  {['PS', 'RM', 'AS', 'NK', 'PJ'].map((init, i) => (
+                    <div key={i} className="w-8 h-8 rounded-full border-2 border-white dark:border-surface-900 gradient-brand-bg flex items-center justify-center text-white text-xs font-600">
                       {init}
                     </div>
                   ))}
                 </div>
                 <div>
                   <div className="flex items-center gap-1 mb-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={12} className="fill-amber-400 text-amber-400" />
-                    ))}
+                    {[...Array(5)].map((_, i) => <Star key={i} size={12} className="fill-amber-400 text-amber-400" />)}
                   </div>
-                  <p className="text-xs text-surface-500">Trusted by 10,000+ users</p>
+                  <p className="text-xs text-surface-500">Trusted by 10,000+ users across all fields</p>
                 </div>
               </div>
             </div>
 
-            {/* Right: Dashboard preview card */}
+            {/* Right — Dashboard mockup */}
             <div className="hidden lg:block animate-fade-up animate-delay-200">
               <div className="relative">
-                {/* Floating cards around main */}
                 <div className="absolute -top-6 -left-6 animate-float" style={{ animationDelay: '0s' }}>
                   <div className="card px-4 py-3 shadow-lifted flex items-center gap-3 whitespace-nowrap">
                     <div className="w-8 h-8 rounded-lg bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center">
@@ -272,32 +273,29 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                {/* Main dashboard mockup */}
-                <div className="card rounded-2xl shadow-lifted overflow-hidden border-surface-200 dark:border-surface-700">
-                  {/* Topbar */}
+                <div className="card rounded-2xl shadow-lifted overflow-hidden">
                   <div className="h-10 bg-surface-50 dark:bg-surface-800 border-b border-surface-200 dark:border-surface-700 flex items-center px-4 gap-1.5">
                     <div className="w-3 h-3 rounded-full bg-red-400" />
                     <div className="w-3 h-3 rounded-full bg-yellow-400" />
                     <div className="w-3 h-3 rounded-full bg-green-400" />
                     <div className="flex-1 bg-white dark:bg-surface-700 rounded-md h-5 mx-6 flex items-center px-2">
-                      <span className="text-2xs text-surface-400">careerai.dev/dashboard</span>
+                      <span className="text-2xs text-surface-400">careerai.vercel.app/dashboard</span>
                     </div>
                   </div>
 
-                  {/* Dashboard content */}
                   <div className="p-5 space-y-4">
-                    {/* Welcome */}
+                    {/* Welcome — generic, no name */}
                     <div className="gradient-brand-bg rounded-xl p-4 text-white">
-                      <div className="text-sm font-600 mb-1">Good morning, Awadhesh! 👋</div>
-                      <div className="text-xs opacity-80">You have 2 milestones due this week</div>
+                      <div className="text-sm font-600 mb-1">Good morning! 👋</div>
+                      <div className="text-xs opacity-80">Your roadmap is 45% complete — keep going!</div>
                     </div>
 
                     {/* Stats */}
                     <div className="grid grid-cols-3 gap-3">
                       {[
-                        { label: 'Career score', value: '78%', color: 'text-navy-600' },
-                        { label: 'Roadmap', value: '45%', color: 'text-teal-600' },
-                        { label: 'Skills', value: '12', color: 'text-violet-600' },
+                        { label: 'Career score', value: '78%',  color: 'text-navy-600' },
+                        { label: 'Roadmap',      value: '45%',  color: 'text-teal-600' },
+                        { label: 'Skills',       value: '12',   color: 'text-violet-600' },
                       ].map(({ label, value, color }) => (
                         <div key={label} className="bg-surface-50 dark:bg-surface-800 rounded-lg p-3">
                           <div className="text-2xs text-surface-400 mb-1">{label}</div>
@@ -306,10 +304,10 @@ export default function LandingPage() {
                       ))}
                     </div>
 
-                    {/* Roadmap progress */}
+                    {/* Roadmap — generic role */}
                     <div className="bg-surface-50 dark:bg-surface-800 rounded-xl p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <div className="text-xs font-medium text-surface-700 dark:text-surface-300">Full Stack Developer</div>
+                        <div className="text-xs font-medium text-surface-700 dark:text-surface-300">Your Career Roadmap</div>
                         <div className="text-xs text-navy-600 font-medium">45%</div>
                       </div>
                       <div className="progress-bar">
@@ -318,14 +316,11 @@ export default function LandingPage() {
                       <div className="text-2xs text-surface-400 mt-1.5">4 of 9 milestones complete</div>
                     </div>
 
-                    {/* Quick actions */}
-                    <div className="grid grid-cols-2 gap-2">
-                      <button className="text-left bg-navy-50 dark:bg-navy-900/30 border border-navy-200/50 dark:border-navy-700/50 rounded-lg p-3 text-xs font-medium text-navy-600 dark:text-navy-300 hover:bg-navy-100 transition-colors">
-                        ◈ Take assessment
-                      </button>
-                      <button className="text-left bg-violet-50 dark:bg-violet-900/20 border border-violet-200/50 dark:border-violet-700/50 rounded-lg p-3 text-xs font-medium text-violet-600 dark:text-violet-300 hover:bg-violet-100 transition-colors">
-                        ✦ AI advisor chat
-                      </button>
+                    {/* Field tags */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {['💻 Tech', '⚖️ Law', '💰 Finance', '🎨 Design'].map(f => (
+                        <span key={f} className="text-2xs px-2 py-1 bg-white dark:bg-surface-700 border border-surface-200 dark:border-surface-600 rounded-full text-surface-500">{f}</span>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -335,7 +330,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── STATS ─────────────────────────────────────────────────── */}
+      {/* ── STATS ─────────────────────────────────────────────── */}
       <section className="bg-white dark:bg-surface-800 border-y border-surface-200 dark:border-surface-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -352,8 +347,39 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── FEATURES ──────────────────────────────────────────────── */}
-      <section id="features" className="section bg-surface-50 dark:bg-surface-900">
+      {/* ── FIELDS GRID ───────────────────────────────────────── */}
+      <section className="section bg-surface-50 dark:bg-surface-900">
+        <div className="container-app">
+          <div className="text-center mb-12">
+            <div className="badge-primary inline-flex mb-4">
+              <Target size={12} /> For every professional
+            </div>
+            <h2 className="font-display text-4xl font-800 text-surface-900 dark:text-white mb-4 text-balance">
+              Built for <span className="gradient-text">all careers,</span> not just tech
+            </h2>
+            <p className="text-base text-surface-500 max-w-2xl mx-auto">
+              CareerAI adapts entirely to your field — different assessments, different roadmaps, different interview questions, different advice.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            {FIELDS.map(({ icon, label, roles }) => (
+              <div key={label} className="card p-4 text-center hover:shadow-lifted hover:-translate-y-1 transition-all duration-200 cursor-default group">
+                <div className="text-3xl mb-2">{icon}</div>
+                <div className="font-display text-sm font-700 text-surface-900 dark:text-white mb-1">{label}</div>
+                <div className="text-2xs text-surface-400 leading-relaxed">{roles}</div>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-sm text-surface-400 mt-6">
+            + Engineering, Science & Research, and more — all fully supported
+          </p>
+        </div>
+      </section>
+
+      {/* ── FEATURES ──────────────────────────────────────────── */}
+      <section id="features" className="section bg-white dark:bg-surface-800">
         <div className="container-app">
           <div className="text-center mb-14">
             <div className="badge-accent inline-flex mb-4">
@@ -364,7 +390,7 @@ export default function LandingPage() {
               <span className="gradient-text">launch your career</span>
             </h2>
             <p className="text-base text-surface-500 dark:text-surface-400 max-w-2xl mx-auto leading-relaxed">
-              From understanding where you are today to landing your dream job — CareerAI covers every step with intelligent, personalised guidance.
+              From knowing where you stand today to landing your dream role — CareerAI covers every step with intelligent, personalised guidance for your field.
             </p>
           </div>
 
@@ -374,8 +400,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ──────────────────────────────────────────── */}
-      <section id="how-it-works" className="section bg-white dark:bg-surface-800">
+      {/* ── HOW IT WORKS ──────────────────────────────────────── */}
+      <section id="how-it-works" className="section bg-surface-50 dark:bg-surface-900">
         <div className="container-app">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
@@ -383,17 +409,13 @@ export default function LandingPage() {
                 <Target size={12} /> Simple process
               </div>
               <h2 className="font-display text-4xl font-800 text-surface-900 dark:text-white mb-6 text-balance">
-                Go from student to{' '}
-                <span className="gradient-text">hired professional</span>{' '}
-                in 4 steps
+                Personalised from{' '}
+                <span className="gradient-text">day one</span>
               </h2>
               <p className="text-base text-surface-500 dark:text-surface-400 leading-relaxed mb-10">
-                Our AI guides you at every stage. No guessing, no generic advice — just a clear, personalised path tailored to your goals.
+                Unlike generic career platforms — CareerAI asks about your field first, then tailors every feature: assessments, roadmaps, interview questions, and AI advice all adapt to you.
               </p>
-              <Link
-                to="/register"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl gradient-brand-bg text-white font-medium shadow-glow hover:opacity-90 transition-all"
-              >
+              <Link to="/register" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl gradient-brand-bg text-white font-medium shadow-glow hover:opacity-90 transition-all">
                 Begin your journey <ArrowRight size={18} />
               </Link>
             </div>
@@ -407,9 +429,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── ABOUT / VISION / MISSION ──────────────────────────────── */}
+      {/* ── ABOUT ─────────────────────────────────────────────── */}
       <section id="about" className="section bg-surface-900 dark:bg-black text-white relative overflow-hidden">
-        {/* bg accent */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-navy-600/10 blur-3xl" />
           <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-teal-600/10 blur-3xl" />
@@ -421,11 +442,11 @@ export default function LandingPage() {
               <BookOpen size={12} /> Our story
             </div>
             <h2 className="font-display text-4xl font-800 mb-4 text-balance">
-              Built by students,{' '}
-              <span className="gradient-text">for students</span>
+              Built for everyone,{' '}
+              <span className="gradient-text">not just coders</span>
             </h2>
             <p className="text-base text-surface-300 max-w-2xl mx-auto leading-relaxed">
-              CareerAI was born from a simple observation — most people have the potential to succeed in their career, but lack the right guidance at the right time.
+              CareerAI was built on one belief — great career guidance shouldn't be limited to people in tech. Every professional deserves a personalised AI companion that understands their field.
             </p>
           </div>
 
@@ -434,19 +455,19 @@ export default function LandingPage() {
               {
                 icon: '🎯',
                 title: 'Our Mission',
-                text: 'To make world-class, personalised career guidance accessible to everyone — from students to working professionals, regardless of background or experience level.',
+                text: 'To make world-class, personalised career guidance accessible to everyone — from law students to medical professionals, from artists to engineers — regardless of background.',
                 color: 'border-navy-500/40 bg-navy-600/10',
               },
               {
                 icon: '🔭',
                 title: 'Our Vision',
-                text: 'A world where every professional has an AI-powered career companion that grows with them — from day one to the corner office.',
+                text: 'A world where every professional has an AI-powered career companion that truly understands their field and grows with them — from first job to dream career.',
                 color: 'border-teal-500/40 bg-teal-600/10',
               },
               {
                 icon: '💡',
                 title: 'Our Values',
-                text: 'Accessibility, transparency, continuous learning, and student-first design. We build tools we wish we had at every stage of our careers.',
+                text: 'Inclusivity, personalisation, continuous learning, and field-first design. We build tools relevant to every career — not just the ones that get the most attention.',
                 color: 'border-violet-500/40 bg-violet-600/10',
               },
             ].map(({ icon, title, text, color }) => (
@@ -458,11 +479,10 @@ export default function LandingPage() {
             ))}
           </div>
 
-          {/* Tech stack */}
           <div className="border border-surface-700 rounded-2xl p-8 text-center">
             <div className="text-sm text-surface-400 mb-5 font-medium">Powered by cutting-edge technology</div>
             <div className="flex flex-wrap items-center justify-center gap-4">
-              {['React', 'Node.js', 'MongoDB', 'Claude AI', 'Tailwind CSS', 'Express', 'Cloudinary'].map((tech) => (
+              {['React', 'Node.js', 'MongoDB', 'Groq AI', 'Tailwind CSS', 'Express', 'Cloudinary'].map((tech) => (
                 <span key={tech} className="px-4 py-2 bg-surface-800 border border-surface-700 rounded-full text-sm text-surface-300 font-medium">
                   {tech}
                 </span>
@@ -472,17 +492,20 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ──────────────────────────────────────────── */}
+      {/* ── TESTIMONIALS ──────────────────────────────────────── */}
       <section className="section bg-surface-50 dark:bg-surface-900">
         <div className="container-app">
           <div className="text-center mb-14">
             <div className="badge-accent inline-flex mb-4">
-              <Star size={12} /> Student stories
+              <Star size={12} /> Real stories
             </div>
             <h2 className="font-display text-4xl font-800 text-surface-900 dark:text-white mb-4 text-balance">
-              Real students,{' '}
-              <span className="gradient-text">real results</span>
+              Professionals from{' '}
+              <span className="gradient-text">every field</span>
             </h2>
+            <p className="text-sm text-surface-500 max-w-xl mx-auto">
+              From tech to law to finance — see how CareerAI helped people across different industries land their dream roles.
+            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -491,7 +514,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── CTA BANNER ────────────────────────────────────────────── */}
+      {/* ── CTA ───────────────────────────────────────────────── */}
       <section className="section bg-white dark:bg-surface-800">
         <div className="container-app">
           <div className="gradient-brand-bg rounded-3xl p-12 text-center text-white relative overflow-hidden">
@@ -504,24 +527,17 @@ export default function LandingPage() {
                 <CheckCircle2 size={12} /> Free to get started · No credit card required
               </div>
               <h2 className="font-display text-4xl lg:text-5xl font-800 mb-4 text-balance">
-                Ready to unlock your career potential?
+                Your career breakthrough starts here
               </h2>
               <p className="text-base opacity-85 mb-10 max-w-xl mx-auto leading-relaxed">
-                Join thousands of students and professionals already using CareerAI to build skills, craft perfect resumes, and land dream jobs.
+                Join thousands of students and professionals across all fields already using CareerAI to build skills, nail interviews, and land their dream roles.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4">
-                <Link
-                  to="/register"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-white text-navy-600 font-600 rounded-xl text-base hover:bg-surface-50 hover:scale-105 transition-all shadow-xl"
-                >
-                  Get started free today
-                  <ArrowRight size={18} />
+                <Link to="/register" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-navy-600 font-600 rounded-xl text-base hover:bg-surface-50 hover:scale-105 transition-all shadow-xl">
+                  Get started free <ArrowRight size={18} />
                 </Link>
-                <Link
-                  to="/login"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-white/15 border border-white/30 text-white font-medium rounded-xl text-base hover:bg-white/25 transition-all"
-                >
-                  Already have account? Log in
+                <Link to="/login" className="inline-flex items-center gap-2 px-8 py-4 bg-white/15 border border-white/30 text-white font-medium rounded-xl text-base hover:bg-white/25 transition-all">
+                  Already have an account? Log in
                 </Link>
               </div>
             </div>
