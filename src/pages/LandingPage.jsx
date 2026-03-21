@@ -98,11 +98,11 @@ const TESTIMONIALS = [
   },
 ]
 
-const STATS = [
-  { value: '10,000+', label: 'Users guided',    icon: Users },
-  { value: '10+',     label: 'Career fields',   icon: Target },
-  { value: '50+',     label: 'Career paths',    icon: Map },
-  { value: '4.9/5',   label: 'Average rating',  icon: Star },
+const HIGHLIGHTS = [
+  { icon: '🆓', value: 'Free forever',   label: 'No credit card needed' },
+  { icon: '🌍', value: '10+ Fields',     label: 'Tech, Law, Finance, Design & more' },
+  { icon: '🤖', value: 'AI-powered',     label: 'Groq AI for every feature' },
+  { icon: '🎯', value: 'Personalised',   label: 'Adapts to your field & goals' },
 ]
 
 // ── Sub-components ────────────────────────────────────────────────
@@ -218,19 +218,17 @@ export default function LandingPage() {
                 </a>
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="flex -space-x-2">
-                  {['PS', 'RM', 'AS', 'NK', 'PJ'].map((init, i) => (
-                    <div key={i} className="w-8 h-8 rounded-full border-2 border-white dark:border-surface-900 gradient-brand-bg flex items-center justify-center text-white text-xs font-600">
-                      {init}
-                    </div>
+              <div className="flex items-center gap-3">
+                <div className="flex gap-2">
+                  {['💻', '⚖️', '💰', '🎨', '🏥'].map((emoji, i) => (
+                    <span key={i} className="w-8 h-8 rounded-full bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 flex items-center justify-center text-sm shadow-card">
+                      {emoji}
+                    </span>
                   ))}
                 </div>
                 <div>
-                  <div className="flex items-center gap-1 mb-0.5">
-                    {[...Array(5)].map((_, i) => <Star key={i} size={12} className="fill-amber-400 text-amber-400" />)}
-                  </div>
-                  <p className="text-xs text-surface-500">Trusted by 10,000+ users across all fields</p>
+                  <p className="text-xs font-medium text-surface-700 dark:text-surface-300">For every career field</p>
+                  <p className="text-xs text-surface-400">Tech · Law · Finance · Design · Healthcare & more</p>
                 </div>
               </div>
             </div>
@@ -241,11 +239,11 @@ export default function LandingPage() {
                 <div className="absolute -top-6 -left-6 animate-float" style={{ animationDelay: '0s' }}>
                   <div className="card px-4 py-3 shadow-lifted flex items-center gap-3 whitespace-nowrap">
                     <div className="w-8 h-8 rounded-lg bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center">
-                      <TrendingUp size={16} className="text-teal-600" />
+                      <Map size={16} className="text-teal-600" />
                     </div>
                     <div>
-                      <div className="text-xs font-medium text-surface-900 dark:text-white">Career score</div>
-                      <div className="text-xs text-teal-600 font-600">↑ 78% this month</div>
+                      <div className="text-xs font-medium text-surface-900 dark:text-white">AI Roadmap</div>
+                      <div className="text-xs text-teal-600 font-600">Generated in seconds</div>
                     </div>
                   </div>
                 </div>
@@ -253,21 +251,21 @@ export default function LandingPage() {
                 <div className="absolute -bottom-4 -right-4 animate-float" style={{ animationDelay: '2s' }}>
                   <div className="card px-4 py-3 shadow-lifted flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-violet-50 dark:bg-violet-900/30 flex items-center justify-center">
-                      <Award size={16} className="text-violet-600" />
+                      <Mic size={16} className="text-violet-600" />
                     </div>
                     <div>
-                      <div className="text-xs font-medium text-surface-900 dark:text-white">ATS score</div>
-                      <div className="text-xs text-violet-600 font-600">92/100 — Excellent</div>
+                      <div className="text-xs font-medium text-surface-900 dark:text-white">Mock Interview</div>
+                      <div className="text-xs text-violet-600 font-600">AI feedback on every answer</div>
                     </div>
                   </div>
                 </div>
 
                 <div className="absolute top-1/2 -right-8 -translate-y-1/2 animate-float" style={{ animationDelay: '1s' }}>
                   <div className="card px-4 py-3 shadow-lifted">
-                    <div className="text-xs font-medium text-surface-900 dark:text-white mb-1">🔥 14-day streak</div>
-                    <div className="flex gap-1">
-                      {[...Array(7)].map((_, i) => (
-                        <div key={i} className={clsx('w-4 h-4 rounded-sm', i < 5 ? 'gradient-brand-bg' : 'bg-surface-200 dark:bg-surface-700')} />
+                    <div className="text-xs font-medium text-surface-900 dark:text-white mb-1">✦ All fields supported</div>
+                    <div className="flex gap-1 flex-wrap max-w-28">
+                      {['💻', '⚖️', '💰', '🎨', '🏥'].map((e, i) => (
+                        <span key={i} className="text-sm">{e}</span>
                       ))}
                     </div>
                   </div>
@@ -284,22 +282,27 @@ export default function LandingPage() {
                   </div>
 
                   <div className="p-5 space-y-4">
-                    {/* Welcome — generic, no name */}
+                    {/* Welcome — dynamic greeting */}
                     <div className="gradient-brand-bg rounded-xl p-4 text-white">
-                      <div className="text-sm font-600 mb-1">Good morning! 👋</div>
+                      <div className="text-sm font-600 mb-1">
+                        {(() => {
+                          const h = new Date().getHours()
+                          return h < 12 ? 'Good morning! 👋' : h < 17 ? 'Good afternoon! 👋' : 'Good evening! 👋'
+                        })()}
+                      </div>
                       <div className="text-xs opacity-80">Your roadmap is 45% complete — keep going!</div>
                     </div>
 
-                    {/* Stats */}
+                    {/* Feature highlights instead of fake numbers */}
                     <div className="grid grid-cols-3 gap-3">
                       {[
-                        { label: 'Career score', value: '78%',  color: 'text-navy-600' },
-                        { label: 'Roadmap',      value: '45%',  color: 'text-teal-600' },
-                        { label: 'Skills',       value: '12',   color: 'text-violet-600' },
-                      ].map(({ label, value, color }) => (
-                        <div key={label} className="bg-surface-50 dark:bg-surface-800 rounded-lg p-3">
-                          <div className="text-2xs text-surface-400 mb-1">{label}</div>
-                          <div className={clsx('text-lg font-700 font-display', color)}>{value}</div>
+                        { label: 'Skill Assessment', icon: '🧠', color: 'text-navy-600' },
+                        { label: 'AI Roadmap',       icon: '🗺️', color: 'text-teal-600' },
+                        { label: 'Mock Interview',   icon: '🎤', color: 'text-violet-600' },
+                      ].map(({ label, icon, color }) => (
+                        <div key={label} className="bg-surface-50 dark:bg-surface-800 rounded-lg p-3 text-center">
+                          <div className="text-lg mb-1">{icon}</div>
+                          <div className={clsx('text-2xs font-600', color)}>{label}</div>
                         </div>
                       ))}
                     </div>
@@ -330,17 +333,15 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── STATS ─────────────────────────────────────────────── */}
+      {/* ── HIGHLIGHTS ────────────────────────────────────────── */}
       <section className="bg-white dark:bg-surface-800 border-y border-surface-200 dark:border-surface-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {STATS.map(({ value, label, icon: Icon }) => (
-              <div key={label} className="text-center group">
-                <div className="w-10 h-10 rounded-xl gradient-brand-bg flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                  <Icon size={18} className="text-white" />
-                </div>
-                <div className="font-display text-3xl font-800 gradient-text mb-1">{value}</div>
-                <div className="text-sm text-surface-500">{label}</div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {HIGHLIGHTS.map(({ icon, value, label }) => (
+              <div key={value} className="text-center group">
+                <div className="text-3xl mb-2">{icon}</div>
+                <div className="font-display text-xl font-800 text-surface-900 dark:text-white mb-0.5">{value}</div>
+                <div className="text-xs text-surface-500">{label}</div>
               </div>
             ))}
           </div>
@@ -500,11 +501,10 @@ export default function LandingPage() {
               <Star size={12} /> Real stories
             </div>
             <h2 className="font-display text-4xl font-800 text-surface-900 dark:text-white mb-4 text-balance">
-              Professionals from{' '}
-              <span className="gradient-text">every field</span>
+              What our users say
             </h2>
             <p className="text-sm text-surface-500 max-w-xl mx-auto">
-              From tech to law to finance — see how CareerAI helped people across different industries land their dream roles.
+              From tech to law to finance — CareerAI helps professionals across all fields grow their careers.
             </p>
           </div>
 
