@@ -6,7 +6,7 @@ import api from '@services/axiosInstance'
 export const useThemeStore = create(
   persist(
     (set) => ({
-      isDark: false,
+      isDark: true,
       toggleTheme: () => set((s) => ({ isDark: !s.isDark })),
       setDark: (val) => set({ isDark: val }),
     }),

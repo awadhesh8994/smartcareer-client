@@ -10,7 +10,6 @@ import toast from 'react-hot-toast'
 import { chatService } from '@services/index'
 import { useAuthStore } from '@store/authStore'
 
-// ─── Suggestions ─────────────────────────────────────────────────────────────
 const FIELD_SUGGESTIONS = {
   Technology: [
     'What skills should I learn for a Full Stack Developer role?',
@@ -87,7 +86,6 @@ const DEFAULT_SUGGESTIONS = [
   'What is the best way to grow my professional network?',
 ]
 
-// ─── Storage ──────────────────────────────────────────────────────────────────
 const STORAGE = {
   sessions:  'career-chat-sessions-v5',
   active:    'career-chat-active-v5',
@@ -142,13 +140,12 @@ function formatTime(value) {
 
 // ─── Skill Gap Modal ──────────────────────────────────────────────────────────
 function SkillGapModal({ onClose, onSubmit }) {
-  const [skills, setSkills]   = useState('')
-  const [role, setRole]       = useState('')
+  const [skills, setSkills] = useState('')
+  const [role, setRole]     = useState('')
 
   const handleSubmit = () => {
     if (!skills.trim() || !role.trim()) { toast.error('Please fill both fields!'); return }
-    onSubmit(skills, role)
-    onClose()
+    onSubmit(skills, role); onClose()
   }
 
   return (
@@ -159,40 +156,20 @@ function SkillGapModal({ onClose, onSubmit }) {
             <BarChart2 size={18} className="text-teal-500" />
             <h3 className="font-display text-base font-bold text-surface-900 dark:text-white">Skill Gap Analyzer</h3>
           </div>
-          <button onClick={onClose} className="text-surface-400 hover:text-surface-600 transition-colors">
-            <X size={18} />
-          </button>
+          <button onClick={onClose} className="text-surface-400 hover:text-surface-600 transition-colors"><X size={18} /></button>
         </div>
-
         <div className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-surface-600 dark:text-surface-400">
-              Your current skills (comma separated)
-            </label>
-            <textarea
-              value={skills}
-              onChange={e => setSkills(e.target.value)}
-              placeholder="e.g. JavaScript, React, Node.js, SQL..."
-              rows={3}
-              className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3 py-2.5 text-sm text-surface-900 placeholder:text-surface-400 focus:border-teal-400 focus:outline-none dark:border-surface-700 dark:bg-surface-800 dark:text-white"
-            />
+            <label className="mb-1.5 block text-xs font-medium text-surface-600 dark:text-surface-400">Your current skills (comma separated)</label>
+            <textarea value={skills} onChange={e => setSkills(e.target.value)} placeholder="e.g. JavaScript, React, Node.js, SQL..." rows={3}
+              className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3 py-2.5 text-sm text-surface-900 placeholder:text-surface-400 focus:border-teal-400 focus:outline-none dark:border-surface-700 dark:bg-surface-800 dark:text-white" />
           </div>
-
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-surface-600 dark:text-surface-400">
-              Your target role
-            </label>
-            <input
-              type="text"
-              value={role}
-              onChange={e => setRole(e.target.value)}
-              placeholder="e.g. Senior Full Stack Developer, Data Scientist..."
-              className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3 py-2.5 text-sm text-surface-900 placeholder:text-surface-400 focus:border-teal-400 focus:outline-none dark:border-surface-700 dark:bg-surface-800 dark:text-white"
-            />
+            <label className="mb-1.5 block text-xs font-medium text-surface-600 dark:text-surface-400">Your target role</label>
+            <input type="text" value={role} onChange={e => setRole(e.target.value)} placeholder="e.g. Senior Full Stack Developer..."
+              className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3 py-2.5 text-sm text-surface-900 placeholder:text-surface-400 focus:border-teal-400 focus:outline-none dark:border-surface-700 dark:bg-surface-800 dark:text-white" />
           </div>
-
-          <button onClick={handleSubmit}
-            className="w-full rounded-xl gradient-brand-bg py-2.5 text-sm font-medium text-white transition-all hover:-translate-y-0.5 hover:shadow-md">
+          <button onClick={handleSubmit} className="w-full rounded-xl gradient-brand-bg py-2.5 text-sm font-medium text-white transition-all hover:-translate-y-0.5 hover:shadow-md">
             Analyze my skill gap →
           </button>
         </div>
@@ -203,30 +180,25 @@ function SkillGapModal({ onClose, onSubmit }) {
 
 // ─── GitHub Modal ─────────────────────────────────────────────────────────────
 function GitHubModal({ onClose, onSubmit }) {
-  const [url, setUrl]       = useState('')
+  const [url, setUrl]         = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async () => {
     if (!url.trim()) { toast.error('Please enter your GitHub URL!'); return }
     const username = url.trim().replace('https://github.com/', '').replace(/\/$/, '').split('/')[0]
     if (!username) { toast.error('Invalid GitHub URL'); return }
-
     setLoading(true)
     try {
       const [userRes, reposRes] = await Promise.all([
         fetch(`https://api.github.com/users/${username}`),
         fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=5`),
       ])
-
       if (!userRes.ok) { toast.error('GitHub user not found!'); setLoading(false); return }
-
       const userData  = await userRes.json()
       const reposData = await reposRes.json()
-
       const languages = [...new Set(reposData.filter(r => r.language).map(r => r.language))].slice(0, 6)
       const repos     = reposData.slice(0, 5).map(r => r.name).join(', ')
-
-      const context = [
+      const context   = [
         `GitHub Username: ${userData.login}`,
         `Name: ${userData.name || 'N/A'}`,
         `Bio: ${userData.bio || 'N/A'}`,
@@ -236,14 +208,9 @@ function GitHubModal({ onClose, onSubmit }) {
         `Recent Repos: ${repos || 'N/A'}`,
         `Location: ${userData.location || 'N/A'}`,
       ].join('\n')
-
-      onSubmit(context, username)
-      onClose()
-    } catch {
-      toast.error('Failed to fetch GitHub data!')
-    } finally {
-      setLoading(false)
-    }
+      onSubmit(context, username); onClose()
+    } catch { toast.error('Failed to fetch GitHub data!') }
+    finally { setLoading(false) }
   }
 
   return (
@@ -254,29 +221,15 @@ function GitHubModal({ onClose, onSubmit }) {
             <Github size={18} className="text-surface-700 dark:text-white" />
             <h3 className="font-display text-base font-bold text-surface-900 dark:text-white">Import GitHub Profile</h3>
           </div>
-          <button onClick={onClose} className="text-surface-400 hover:text-surface-600 transition-colors">
-            <X size={18} />
-          </button>
+          <button onClick={onClose} className="text-surface-400 hover:text-surface-600 transition-colors"><X size={18} /></button>
         </div>
-
         <div className="space-y-4">
           <div>
-            <label className="mb-1.5 block text-xs font-medium text-surface-600 dark:text-surface-400">
-              Your GitHub profile URL
-            </label>
-            <input
-              type="text"
-              value={url}
-              onChange={e => setUrl(e.target.value)}
-              placeholder="https://github.com/yourusername"
-              className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3 py-2.5 text-sm text-surface-900 placeholder:text-surface-400 focus:border-teal-400 focus:outline-none dark:border-surface-700 dark:bg-surface-800 dark:text-white"
-            />
+            <label className="mb-1.5 block text-xs font-medium text-surface-600 dark:text-surface-400">Your GitHub profile URL</label>
+            <input type="text" value={url} onChange={e => setUrl(e.target.value)} placeholder="https://github.com/yourusername"
+              className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3 py-2.5 text-sm text-surface-900 placeholder:text-surface-400 focus:border-teal-400 focus:outline-none dark:border-surface-700 dark:bg-surface-800 dark:text-white" />
           </div>
-
-          <p className="text-xs text-surface-400">
-            We'll fetch your public profile, repos, and languages to give you personalized career advice.
-          </p>
-
+          <p className="text-xs text-surface-400">We'll fetch your public profile, repos, and languages to give you personalized career advice.</p>
           <button onClick={handleSubmit} disabled={loading}
             className="w-full rounded-xl gradient-brand-bg py-2.5 text-sm font-medium text-white transition-all hover:-translate-y-0.5 hover:shadow-md disabled:opacity-50">
             {loading ? 'Fetching profile...' : 'Import & Analyze →'}
@@ -299,22 +252,27 @@ function Message({ msg }) {
   }
 
   return (
-    <div className={clsx('flex gap-3 animate-fade-up group', isUser && 'flex-row-reverse')}>
-      <div className={clsx('mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl shadow-sm',
-        isUser ? 'gradient-brand-bg text-white' : 'bg-gradient-to-br from-violet-500 to-teal-500 text-white')}>
+    <div className={clsx('flex gap-3 animate-fade-up group', isUser ? 'flex-row-reverse' : 'flex-row')}>
+      {/* Avatar */}
+      <div className={clsx(
+        'mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl shadow-sm',
+        isUser ? 'gradient-brand-bg text-white' : 'bg-gradient-to-br from-violet-500 to-teal-500 text-white'
+      )}>
         {isUser ? <User size={16} /> : <Sparkles size={16} />}
       </div>
 
-      <div className="max-w-[86%] sm:max-w-[78%]">
-        <p className={clsx('mb-1 px-1 text-xs font-medium',
-          isUser ? 'text-right text-navy-600 dark:text-navy-300' : 'text-surface-500')}>
+      {/* Bubble */}
+      <div className={clsx('flex flex-col gap-1', isUser ? 'items-end max-w-[75%]' : 'items-start max-w-[78%]')}>
+        <p className={clsx('px-1 text-xs font-medium', isUser ? 'text-navy-600 dark:text-navy-300' : 'text-surface-500')}>
           {isUser ? 'You' : 'CareerAI Advisor'}
         </p>
 
-        <div className={clsx('rounded-[22px] px-4 py-3 text-sm leading-relaxed shadow-sm',
+        <div className={clsx(
+          'rounded-[22px] px-4 py-3 text-sm leading-relaxed shadow-sm',
           isUser
             ? 'rounded-tr-md bg-gradient-to-r from-navy-600 to-teal-500 text-white'
-            : 'rounded-tl-md border border-surface-200 bg-white text-surface-800 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-200')}>
+            : 'rounded-tl-md border border-surface-200 bg-white text-surface-800 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-200'
+        )}>
           {isUser ? msg.content : (
             <ReactMarkdown components={{
               p:      ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
@@ -334,16 +292,16 @@ function Message({ msg }) {
           )}
         </div>
 
-        <div className={clsx('mt-1 flex items-center gap-2 px-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200',
-          isUser ? 'flex-row-reverse' : 'flex-row')}>
-          {!isUser && (
+        {/* Copy button for AI messages */}
+        {!isUser && (
+          <div className="flex items-center gap-2 px-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
             <button onClick={handleCopy} className="flex items-center gap-1 text-[10px] text-surface-400 hover:text-teal-500 transition-colors">
               {copied
                 ? <><Check size={10} className="text-teal-500" /><span className="text-teal-500">Copied!</span></>
                 : <><Copy size={10} /><span>Copy</span></>}
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -401,12 +359,10 @@ export default function Chatbot() {
   const messages      = activeSession ? activeSession.messages : []
   const historyItems  = sortSessions(sessions)
 
-  // ── Persist ──
   useEffect(() => { writeJson(STORAGE.sessions, sortSessions(sessions)) }, [sessions])
   useEffect(() => { writeJson(STORAGE.active, activeSessionId) }, [activeSessionId])
   useEffect(() => { writeJson(STORAGE.width, sidebarWidth); writeJson(STORAGE.collapsed, sidebarCollapsed) }, [sidebarWidth, sidebarCollapsed])
 
-  // ── Load history ──
   useEffect(() => {
     chatService.getHistory()
       .then(r => {
@@ -432,7 +388,6 @@ export default function Chatbot() {
     node.style.height = Math.min(node.scrollHeight, 160) + 'px'
   }, [input])
 
-  // ── Resize sidebar ──
   useEffect(() => {
     const onMove = e => {
       if (!resizingRef.current || !containerRef.current) return
@@ -445,14 +400,12 @@ export default function Chatbot() {
     return () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp) }
   }, [])
 
-  // ── Close plus menu on outside click ──
   useEffect(() => {
     const handler = e => { if (plusMenuRef.current && !plusMenuRef.current.contains(e.target)) setShowPlusMenu(false) }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  // ── Helpers ──
   const saveSession = (nextMessages, id) => {
     const session = buildSession(nextMessages, id)
     setSessions(prev => sortSessions([session, ...prev.filter(s => s.id !== session.id)]))
@@ -466,7 +419,6 @@ export default function Chatbot() {
     createFreshChat(); toast.success('Chat cleared')
   }
 
-  // ── Mic ──
   const handleMic = () => {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition
     if (!SR) { toast.error('Mic not supported in this browser'); return }
@@ -480,7 +432,25 @@ export default function Chatbot() {
     recognitionRef.current = r; r.start()
   }
 
-  // ── Send ──
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0]; if (!file) return
+    setShowPlusMenu(false); toast('Reading your resume...')
+    try {
+      const text    = await file.text()
+      const cleaned = text.replace(/\s+/g, ' ').trim().slice(0, 3000)
+      await send(`I have uploaded my resume. Please analyze it and give me:\n1. Key strengths\n2. Areas to improve\n3. ATS score estimate\n4. Career suggestions\n\nResume content:\n${cleaned}`)
+    } catch { toast.error('Could not read file. Try a .txt file!') }
+    e.target.value = ''
+  }
+
+  const handleGitHubSubmit = async (context) => {
+    await send(`I have shared my GitHub profile. Please analyze it and give me:\n1. What my profile says about my skills\n2. How to improve my GitHub for job applications\n3. Career path suggestions based on my repos\n\nMy GitHub Data:\n${context}`)
+  }
+
+  const handleSkillGapSubmit = async (skills, role) => {
+    await send(`Please analyze my skill gap:\n\nMy current skills: ${skills}\nMy target role: ${role}\n\nPlease tell me:\n1. What skills I'm missing\n2. Priority order to learn them\n3. Estimated time to be job-ready\n4. Best resources to learn each skill`)
+  }
+
   const send = async (text) => {
     if (typing) return
     const nextMessage = String(text || input).trim(); if (!nextMessage) return
@@ -495,36 +465,6 @@ export default function Chatbot() {
     finally { setTyping(false); inputRef.current?.focus() }
   }
 
-  // ── Resume Upload ──
-  const handleFileChange = async (e) => {
-    const file = e.target.files?.[0]; if (!file) return
-    setShowPlusMenu(false)
-    toast('Reading your resume...')
-
-    try {
-      const text = await file.text()
-      const cleaned = text.replace(/\s+/g, ' ').trim().slice(0, 3000)
-      const prompt = `I have uploaded my resume. Please analyze it and give me:\n1. Key strengths\n2. Areas to improve\n3. ATS score estimate\n4. Career suggestions\n\nResume content:\n${cleaned}`
-      await send(prompt)
-    } catch {
-      toast.error('Could not read file. Try a .txt file!')
-    }
-
-    e.target.value = ''
-  }
-
-  // ── GitHub Submit ──
-  const handleGitHubSubmit = async (context, username) => {
-    const prompt = `I have shared my GitHub profile. Please analyze it and give me:\n1. What my profile says about my skills\n2. How to improve my GitHub for job applications\n3. Career path suggestions based on my repos\n\nMy GitHub Data:\n${context}`
-    await send(prompt)
-  }
-
-  // ── Skill Gap Submit ──
-  const handleSkillGapSubmit = async (skills, role) => {
-    const prompt = `Please analyze my skill gap:\n\nMy current skills: ${skills}\nMy target role: ${role}\n\nPlease tell me:\n1. What skills I'm missing\n2. Priority order to learn them\n3. Estimated time to be job-ready\n4. Best resources to learn each skill`
-    await send(prompt)
-  }
-
   const startResize = e => {
     e.preventDefault(); resizingRef.current = true
     document.body.style.cursor = 'col-resize'; document.body.style.userSelect = 'none'
@@ -534,12 +474,8 @@ export default function Chatbot() {
 
   return (
     <div className="h-[calc(100vh-8rem)] max-w-7xl mx-auto">
-
-      {/* Modals */}
       {showSkillGap && <SkillGapModal onClose={() => setShowSkillGap(false)} onSubmit={handleSkillGapSubmit} />}
       {showGitHub   && <GitHubModal  onClose={() => setShowGitHub(false)}   onSubmit={handleGitHubSubmit}  />}
-
-      {/* Hidden file input */}
       <input ref={fileInputRef} type="file" accept=".txt,.pdf,.doc,.docx" onChange={handleFileChange} className="hidden" />
 
       <div ref={containerRef}
@@ -548,7 +484,6 @@ export default function Chatbot() {
 
         {/* ── Sidebar ── */}
         <aside className="relative flex min-h-0 flex-col border-r border-surface-200 bg-white dark:border-surface-700 dark:bg-surface-900">
-
           <div className="border-b border-surface-200 p-3 dark:border-surface-700">
             <div className="flex items-center justify-between gap-2">
               <div className="flex min-w-0 items-center gap-2.5">
@@ -603,21 +538,16 @@ export default function Chatbot() {
                   </button>
                 ) : (
                   <button key={session.id} onClick={() => openSession(session.id)}
-                    className={clsx('w-full rounded-xl border p-2.5 text-left transition-colors',
+                    className={clsx('w-full rounded-xl border px-3 py-2 text-left transition-colors',
                       session.id === activeSessionId
                         ? 'border-teal-300 bg-teal-50/70 dark:border-teal-700 dark:bg-teal-900/20'
                         : 'border-surface-200 bg-white hover:border-teal-300 hover:bg-teal-50/60 dark:border-surface-700 dark:bg-surface-800 dark:hover:border-teal-700')}>
-                    <div className="flex items-start gap-2.5">
-                      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-100 text-surface-500 dark:bg-surface-700 dark:text-surface-300">
-                        <MessageSquareText size={14} />
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <MessageSquareText size={13} className={clsx('shrink-0', session.id === activeSessionId ? 'text-teal-500' : 'text-surface-400')} />
+                        <p className="truncate text-[13px] font-medium text-surface-900 dark:text-white">{session.title}</p>
                       </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-start justify-between gap-2">
-                          <p className="truncate text-[13px] font-medium text-surface-900 dark:text-white">{session.title}</p>
-                          <span className="shrink-0 text-[10px] text-surface-400">{formatTime(session.updatedAt)}</span>
-                        </div>
-                        <p className="truncate text-[11px] text-surface-500">{session.messages[0]?.content || 'Open chat'}</p>
-                      </div>
+                      <span className="shrink-0 text-[10px] text-surface-400">{formatTime(session.updatedAt)}</span>
                     </div>
                   </button>
                 )
@@ -682,8 +612,7 @@ export default function Chatbot() {
                     Hey, {firstName}. Ready to dive in?
                   </h2>
                   <p className="mx-auto mb-6 max-w-2xl text-sm leading-7 text-surface-500">
-                    Ask about roles, resumes, interviews, upskilling, and career strategy.
-                    Each chat stays saved in History and opens instantly.
+                    Ask about roles, resumes, interviews, upskilling, and career strategy. Each chat stays saved in History and opens instantly.
                   </p>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {suggestions.map(s => (
@@ -720,22 +649,17 @@ export default function Chatbot() {
 
                   {/* Plus Menu */}
                   <div className="relative mb-1" ref={plusMenuRef}>
-                    <button
-                      onClick={() => setShowPlusMenu(p => !p)}
-                      className={clsx(
-                        'flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-sm transition-all',
+                    <button onClick={() => setShowPlusMenu(p => !p)}
+                      className={clsx('flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-sm transition-all',
                         showPlusMenu
                           ? 'bg-teal-500 text-white'
-                          : 'bg-white text-surface-500 hover:bg-teal-50 hover:text-teal-600 dark:bg-surface-700 dark:text-surface-300 dark:hover:bg-surface-600 dark:hover:text-teal-300'
-                      )}>
+                          : 'bg-white text-surface-500 hover:bg-teal-50 hover:text-teal-600 dark:bg-surface-700 dark:text-surface-300 dark:hover:bg-surface-600 dark:hover:text-teal-300')}>
                       <Plus size={17} className={clsx('transition-transform duration-200', showPlusMenu && 'rotate-45')} />
                     </button>
 
                     {showPlusMenu && (
                       <div className="absolute bottom-14 left-0 z-30 w-56 rounded-2xl border border-surface-200 bg-white py-2 shadow-xl dark:border-surface-700 dark:bg-surface-800">
-
-                        <button
-                          onClick={() => { setShowPlusMenu(false); fileInputRef.current?.click() }}
+                        <button onClick={() => { setShowPlusMenu(false); fileInputRef.current?.click() }}
                           className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-50 dark:text-surface-300 dark:hover:bg-surface-700 transition-colors">
                           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-500 dark:bg-blue-900/20">
                             <FileText size={15} />
@@ -746,8 +670,7 @@ export default function Chatbot() {
                           </div>
                         </button>
 
-                        <button
-                          onClick={() => { setShowPlusMenu(false); setShowGitHub(true) }}
+                        <button onClick={() => { setShowPlusMenu(false); setShowGitHub(true) }}
                           className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-50 dark:text-surface-300 dark:hover:bg-surface-700 transition-colors">
                           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-100 text-surface-700 dark:bg-surface-700 dark:text-white">
                             <Github size={15} />
@@ -760,8 +683,7 @@ export default function Chatbot() {
 
                         <div className="my-1 border-t border-surface-100 dark:border-surface-700" />
 
-                        <button
-                          onClick={() => { setShowPlusMenu(false); setShowSkillGap(true) }}
+                        <button onClick={() => { setShowPlusMenu(false); setShowSkillGap(true) }}
                           className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-surface-700 hover:bg-surface-50 dark:text-surface-300 dark:hover:bg-surface-700 transition-colors">
                           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-600 dark:bg-teal-900/20 dark:text-teal-300">
                             <BarChart2 size={15} />
@@ -771,20 +693,16 @@ export default function Chatbot() {
                             <p className="text-[11px] text-surface-400">Find what's missing</p>
                           </div>
                         </button>
-
                       </div>
                     )}
                   </div>
 
-                  <textarea
-                    ref={inputRef}
-                    value={input}
+                  <textarea ref={inputRef} value={input}
                     onChange={e => setInput(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
                     placeholder={user?.field ? 'Ask about ' + user.field + ' careers...' : 'Ask your career question...'}
                     style={{ maxHeight: '160px', outline: 'none', boxShadow: 'none' }}
-                    className="min-h-[56px] flex-1 resize-none bg-transparent px-4 py-3 text-sm text-surface-900 placeholder:text-surface-400 dark:text-white border-none"
-                  />
+                    className="min-h-[56px] flex-1 resize-none bg-transparent px-4 py-3 text-sm text-surface-900 placeholder:text-surface-400 dark:text-white border-none" />
 
                   <button onClick={handleMic}
                     className={clsx('mb-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl shadow-sm transition-all',
