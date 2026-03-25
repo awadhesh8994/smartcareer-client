@@ -28,7 +28,7 @@ import Learning           from '@pages/Learning'
 import ResumeBuilder      from '@pages/ResumeBuilder'
 import Analytics          from '@pages/Analytics'
 import Chatbot            from '@pages/Chatbot'
-import Network            from '@pages/Network'
+import Resources         from '@pages/Resources'
 import Jobs               from '@pages/Jobs'
 import Interview          from '@pages/Interview'
 
@@ -127,7 +127,7 @@ export default function App() {
           <Route path="/resume"     element={<ResumeBuilder />} />
           <Route path="/analytics"  element={<Analytics />} />
           <Route path="/chatbot"    element={<Chatbot />} />
-          <Route path="/network"    element={<Network />} />
+          <Route path="/resources"  element={<Resources />} />
           <Route path="/jobs"       element={<Jobs />} />
           <Route path="/interview"  element={<Interview />} />
         </Route>

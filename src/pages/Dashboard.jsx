@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '@store/authStore'
 import { userService } from '@services/index'
-import { Brain, Map, FileText, MessageSquare, ArrowRight, Flame, TrendingUp, Target, Star, CheckCircle2, Briefcase, Mic } from 'lucide-react'
+import { Brain, Map, FileText, MessageSquare, Library, ArrowRight, Flame, TrendingUp, Target, Star, CheckCircle2, Briefcase, Mic } from 'lucide-react'
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts'
 import clsx from 'clsx'
 
@@ -12,7 +12,7 @@ const QUICK_ACTIONS = [
   { icon: FileText,     label: 'Build resume',     href: '/resume',     color: 'bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-300', border: 'border-violet-200/60 dark:border-violet-700/50' },
   { icon: Briefcase,    label: 'Browse jobs',      href: '/jobs',       color: 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300',   border: 'border-amber-200/60 dark:border-amber-700/50' },
   { icon: Mic,          label: 'Mock interview',   href: '/interview',  color: 'bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-300',       border: 'border-pink-200/60 dark:border-pink-700/50' },
-  { icon: MessageSquare,label: 'Ask AI advisor',   href: '/chatbot',    color: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300', border: 'border-indigo-200/60 dark:border-indigo-700/50' },
+  { icon: Library,       label: 'Resources',        href: '/resources',    color: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-300', border: 'border-indigo-200/60 dark:border-indigo-700/50' },
 ]
 
 const ACTIVITY_DATA = [
