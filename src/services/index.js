@@ -134,3 +134,16 @@ export const interviewService = {
   history:  ()           => api.get('/interviews/history'),
   getById:  (id)         => api.get(`/interviews/${id}`),
 }
+
+export const resourceService = {
+  getAll:    (params) => api.get(`/resources?${new URLSearchParams(params)}`),
+  submit:    (data)   => api.post('/resources', data),
+  upvote:    (id)     => api.post(`/resources/${id}/upvote`),
+  complete:  (id)     => api.post(`/resources/${id}/complete`),
+  // Admin
+  pending:   ()       => api.get('/resources/pending'),
+  approve:   (id)     => api.patch(`/resources/${id}/approve`),
+  reject:    (id)     => api.patch(`/resources/${id}/reject`),
+  pin:       (id)     => api.patch(`/resources/${id}/pin`),
+  remove:    (id)     => api.delete(`/resources/${id}`),
+}

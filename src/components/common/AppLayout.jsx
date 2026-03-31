@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Brain, Map, BookOpen, FileText,
-  BarChart3, MessageSquare, Users, Bell, LogOut,
+  BarChart3, MessageSquare, Library, Bell, LogOut,
   Sparkles, Menu, Sun, Moon, ChevronRight, Shield,
   Briefcase, Mic
 } from 'lucide-react'
@@ -34,7 +34,7 @@ const STUDENT_NAV = [
     items: [
       { icon: BarChart3,     label: 'Analytics',  href: '/analytics' },
       { icon: MessageSquare, label: 'AI Chatbot', href: '/chatbot',  badge: 'AI' },
-      { icon: Users,         label: 'Network',    href: '/network' },
+      { icon: Library,       label: 'Resources',  href: '/resources' },
     ],
   },
 ]
@@ -58,7 +58,7 @@ const ADMIN_NAV = [
       { icon: Mic,             label: 'Interview',  href: '/interview' },
       { icon: BarChart3,       label: 'Analytics',  href: '/analytics' },
       { icon: MessageSquare,   label: 'AI Chatbot', href: '/chatbot' },
-      { icon: Users,           label: 'Network',    href: '/network' },
+      { icon: Library,         label: 'Resources',  href: '/resources' },
     ],
   },
 ]
