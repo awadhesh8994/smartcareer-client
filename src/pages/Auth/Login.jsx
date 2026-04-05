@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Eye, EyeOff, Sparkles, ArrowRight, Mail, Lock, AlertCircle } from 'lucide-react'
 import { useAuthStore } from '@store/authStore'
 import toast from 'react-hot-toast'
@@ -19,6 +19,17 @@ export default function Login() {
   const [pendingMsg, setPendingMsg] = useState('')
   const { login, isLoading }    = useAuthStore()
   const navigate                = useNavigate()
+  const [searchParams]          = useSearchParams()
+
+  const oauthError = searchParams.get('error')
+  const oauthMessage =
+    oauthError === 'pending_recruiter'
+      ? 'Your recruiter account is pending admin approval. Please wait until it is approved before signing in with Google.'
+      : oauthError === 'rejected_recruiter'
+        ? 'Your recruiter application was rejected. Please contact support for help.'
+        : oauthError === 'oauth'
+          ? 'Google sign-in could not be completed. Please try again.'
+          : ''
 
   const validate = () => {
     const e = {}
@@ -103,10 +114,10 @@ export default function Login() {
           </div>
 
           {/* Pending approval notice */}
-          {pendingMsg && (
+          {(pendingMsg || oauthMessage) && (
             <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl p-4 mb-6">
               <AlertCircle size={16} className="text-amber-500 shrink-0 mt-0.5" />
-              <p className="text-sm text-amber-700 dark:text-amber-300">{pendingMsg}</p>
+              <p className="text-sm text-amber-700 dark:text-amber-300">{pendingMsg || oauthMessage}</p>
             </div>
           )}
 

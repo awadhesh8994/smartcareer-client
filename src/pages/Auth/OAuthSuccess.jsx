@@ -4,6 +4,13 @@ import { useAuthStore } from '@store/authStore'
 import api from '@services/axiosInstance'
 import toast from 'react-hot-toast'
 
+const getPostLoginRoute = (user) => {
+  if (user?.role === 'admin') return '/admin'
+  if (user?.role === 'recruiter') return '/recruiter'
+  if (user?.role === 'student' && !user?.onboarded) return '/onboarding'
+  return '/dashboard'
+}
+
 export default function OAuthSuccess() {
   const [params]    = useSearchParams()
   const navigate    = useNavigate()
@@ -16,9 +23,10 @@ export default function OAuthSuccess() {
     localStorage.setItem('career-auth', JSON.stringify({ state: { token } }))
     api.get('/users/profile')
       .then(({ data }) => {
-        setAuth(data.data, token)
+        const user = data.data
+        setAuth(user, token)
         toast.success('Signed in with Google!')
-        navigate('/dashboard')
+        navigate(getPostLoginRoute(user), { replace: true })
       })
       .catch(() => { toast.error('Login failed'); navigate('/login') })
   }, [])
