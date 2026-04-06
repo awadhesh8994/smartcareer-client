@@ -1345,18 +1345,23 @@ export default function Interview() {
   }
 
   if (phase === 'interview' && currentQuestion) {
-    const scoreTone = evaluation ? getScoreTone(evaluation.score) : null
     const progressPercent = questions.length ? Math.round((((evaluation ? currentQ + 1 : currentQ) / questions.length) * 100)) : 0
     const activeTranscript = draftPreview || answer
-    const activeWorkspaceTab = evaluation ? workspaceTab : workspaceTab === 'feedback' ? 'transcript' : workspaceTab
-    const workspaceTabIndex = activeWorkspaceTab === 'recording' ? 0 : activeWorkspaceTab === 'transcript' ? 1 : 2
-    const workspaceIndicatorOffset = workspaceTabIndex === 0 ? '0%' : workspaceTabIndex === 1 ? 'calc(100% + 0.25rem)' : 'calc(200% + 0.5rem)'
+    const activeWorkspaceTab = workspaceTab === 'transcript' ? 'transcript' : 'recording'
+    const workspaceTabIndex = activeWorkspaceTab === 'recording' ? 0 : 1
+    const workspaceIndicatorOffset = workspaceTabIndex === 0 ? '0%' : 'calc(100% + 0.25rem)'
     const canSubmitNow = Boolean((isListening ? draftPreview : answer).trim()) && !loading
     const readyFeedbackCount = Object.values(feedbackByQuestion).filter((item) => item?.status === 'ready').length
 
     return (
-      <div className="mx-auto max-w-4xl space-y-4 animate-fade-in">
-        <section className="overflow-hidden rounded-[32px] border border-slate-700 bg-[#162033] shadow-[0_24px_80px_rgba(2,6,23,0.35)]">
+      <div className="mx-auto max-w-[1500px] animate-fade-in">
+        <div className="flex items-start justify-center gap-5">
+          <section
+            className={clsx(
+              'w-full max-w-4xl overflow-hidden rounded-[32px] border border-slate-700 bg-[#162033] shadow-[0_24px_80px_rgba(2,6,23,0.35)] transition-transform duration-300 ease-out',
+              feedbackPanelOpen ? 'xl:-translate-x-8' : 'translate-x-0'
+            )}
+          >
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700 px-5 py-4 sm:px-6">
             <div className="flex flex-wrap items-center gap-2">
               <span className={clsx('badge text-xs', currentQuestion.category === 'HR' ? 'badge-primary' : currentQuestion.category === 'Technical' ? 'badge-accent' : 'badge-violet')}>
@@ -1506,15 +1511,14 @@ export default function Interview() {
             <div className="mt-7 rounded-[30px] border border-slate-700 bg-[#0f172a]">
               <div className="border-b border-slate-700 px-4 py-4 sm:px-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div className="relative grid w-full max-w-[440px] grid-cols-3 gap-1 rounded-2xl bg-[#0b1220] p-1">
+                  <div className="relative grid w-full max-w-[320px] grid-cols-2 gap-1 rounded-2xl bg-[#0b1220] p-1">
                     <span
                       className="absolute bottom-1 top-1 rounded-xl border border-slate-600 bg-slate-800 shadow-sm transition-all duration-300"
-                      style={{ left: workspaceIndicatorOffset, width: 'calc(33.333% - 0.333rem)' }}
+                      style={{ left: workspaceIndicatorOffset, width: 'calc(50% - 0.25rem)' }}
                     />
                     {[
                       { key: 'recording', label: 'Recording', icon: Mic },
                       { key: 'transcript', label: 'Transcript', icon: PenLine },
-                      { key: 'feedback', label: 'Feedback', icon: WandSparkles },
                     ].map(({ key, label, icon: Icon }) => (
                       <button
                         key={key}
@@ -1547,10 +1551,10 @@ export default function Interview() {
 
               <div className="overflow-hidden">
                 <div
-                  className="flex w-[300%] transition-transform duration-500 ease-out"
-                  style={{ transform: `translateX(-${workspaceTabIndex * 33.333333}%)` }}
+                  className="flex w-[200%] transition-transform duration-500 ease-out"
+                  style={{ transform: `translateX(-${workspaceTabIndex * 50}%)` }}
                 >
-                  <div className="w-1/3 shrink-0 p-5 sm:p-6">
+                  <div className="w-1/2 shrink-0 p-5 sm:p-6">
                     <div className="grid gap-5 lg:grid-cols-[320px_1fr]">
                       <div className="rounded-[28px] border border-slate-700 bg-[#111b2e] p-5">
                         <VoiceOrbButton
@@ -1638,7 +1642,7 @@ export default function Interview() {
                     </div>
                   </div>
 
-                  <div className="w-1/3 shrink-0 p-5 sm:p-6">
+                  <div className="w-1/2 shrink-0 p-5 sm:p-6">
                     <div
                       className="rounded-[28px] border border-slate-700 p-5 text-slate-100"
                       style={{ backgroundColor: '#111b2e', borderColor: '#334155' }}
@@ -1722,87 +1726,34 @@ export default function Interview() {
                     </div>
                   </div>
 
-                  <div className="w-1/3 shrink-0 p-5 sm:p-6">
-                    {evaluation ? (
-                      <div className="rounded-[28px] border border-slate-700 bg-[#111b2e] p-5">
-                        <div className={clsx('rounded-3xl border p-5', scoreTone.panel)}>
-                          <div className="flex flex-wrap items-start justify-between gap-4">
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <CheckCircle2 size={16} className={scoreTone.text} />
-                                <span className="text-sm font-semibold text-surface-900 dark:text-white">Feedback</span>
-                                <span className={clsx('badge text-xs', scoreTone.badge)}>{scoreTone.label}</span>
-                              </div>
-                              <p className="mt-3 max-w-2xl text-sm leading-7 text-surface-700 dark:text-surface-300">{evaluation.feedback}</p>
-                            </div>
-                            <div className="text-right">
-                              <div className="text-xs font-semibold uppercase tracking-[0.14em] text-surface-400">Score</div>
-                              <div className={clsx('mt-1 font-display text-4xl font-800', scoreTone.text)}>{evaluation.score}/10</div>
-                            </div>
-                          </div>
-
-                          {evaluation.keywordsFound?.length > 0 && (
-                            <div className="mt-4 flex flex-wrap gap-2">
-                              {evaluation.keywordsFound.map((keyword) => (
-                                <span key={keyword} className="badge-accent text-xs">{keyword}</span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="mt-5 flex flex-wrap gap-3">
-                          <button
-                            type="button"
-                            onClick={nextQuestion}
-                            className="btn-primary rounded-xl px-5 py-3"
-                          >
-                            {currentQ + 1 < questions.length ? 'Next question' : 'Finish interview'}
-                            <ChevronRight size={16} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              stopPlayback()
-                              speak(`Feedback on your answer. Score ${evaluation.score} out of 10. ${evaluation.feedback}`)
-                            }}
-                            className="btn-outline rounded-xl px-5 py-3"
-                          >
-                            <Volume2 size={15} />
-                            Hear feedback
-                          </button>
-                          <button type="button" onClick={handleReplayQuestion} className="btn-outline rounded-xl px-5 py-3">
-                            <PlayCircle size={15} />
-                            Replay question
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex h-full min-h-[420px] items-center justify-center rounded-[28px] border border-dashed border-slate-700 bg-[#111b2e] p-8 text-center">
-                        <div className="max-w-sm">
-                          <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-100 text-surface-500 dark:bg-surface-800 dark:text-surface-300">
-                            <WandSparkles size={22} />
-                          </div>
-                          <h3 className="mt-4 text-lg font-semibold text-surface-900 dark:text-white">Feedback appears here</h3>
-                          <p className="mt-2 text-sm leading-6 text-surface-500">
-                            Submit your current response to get AI feedback, hear the spoken evaluation, and continue to the next question.
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
+          </section>
+
+          <div className="hidden xl:flex w-[190px] shrink-0 justify-start pt-5">
+            <button
+              type="button"
+              onClick={() => setFeedbackPanelOpen((value) => !value)}
+              className="sticky top-24 flex items-center gap-2 rounded-full border border-slate-700 bg-[#111b2e] px-4 py-3 text-sm font-semibold text-slate-100 shadow-[0_16px_40px_rgba(2,6,23,0.35)]"
+            >
+              <WandSparkles size={16} className="text-teal-400" />
+              <span>{feedbackPanelOpen ? 'Hide feedback' : 'Feedback'}</span>
+              <span className="rounded-full bg-[#0b1324] px-2 py-0.5 text-[11px] text-slate-300">
+                {readyFeedbackCount}/{questions.length}
+              </span>
+            </button>
+          </div>
+        </div>
 
         <button
           type="button"
           onClick={() => setFeedbackPanelOpen((value) => !value)}
-          className="fixed right-5 top-1/2 z-40 flex -translate-y-1/2 items-center gap-2 rounded-full border border-slate-700 bg-[#111b2e]/95 px-4 py-3 text-sm font-semibold text-slate-100 shadow-[0_16px_40px_rgba(2,6,23,0.45)] backdrop-blur md:right-6"
+          className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full border border-slate-700 bg-[#111b2e]/95 px-4 py-3 text-sm font-semibold text-slate-100 shadow-[0_16px_40px_rgba(2,6,23,0.45)] backdrop-blur xl:hidden"
         >
           <WandSparkles size={16} className="text-teal-400" />
-          <span className="hidden sm:inline">{feedbackPanelOpen ? 'Hide feedback' : 'Feedback'}</span>
+          <span>{feedbackPanelOpen ? 'Hide feedback' : 'Feedback'}</span>
           <span className="rounded-full bg-[#0b1324] px-2 py-0.5 text-[11px] text-slate-300">
             {readyFeedbackCount}/{questions.length}
           </span>
