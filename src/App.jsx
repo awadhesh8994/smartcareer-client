@@ -15,6 +15,7 @@ import Login              from '@pages/Auth/Login'
 import Register           from '@pages/Auth/Register'
 import OAuthSuccess       from '@pages/Auth/OAuthSuccess'
 import ForgotPassword     from '@pages/Auth/ForgotPassword'
+import ResetPassword      from '@pages/Auth/ResetPassword'
 
 // Onboarding
 import Onboarding         from '@pages/Onboarding'
@@ -111,6 +112,7 @@ export default function App() {
           <Route path="/login"           element={<PublicOnlyRoute><Login /></PublicOnlyRoute>} />
           <Route path="/register"        element={<PublicOnlyRoute><Register /></PublicOnlyRoute>} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/oauth-success"   element={<OAuthSuccess />} />
         </Route>
 
