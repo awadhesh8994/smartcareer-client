@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Sparkles, ArrowRight, User, Mail, Lock, CheckCircle2, Building2, GraduationCap } from 'lucide-react'
 import { useAuthStore } from '@store/authStore'
-import api from '@services/axiosInstance'
+import api, { GOOGLE_AUTH_URL } from '@services/axiosInstance'
 import toast from 'react-hot-toast'
 import clsx from 'clsx'
 
@@ -237,7 +237,7 @@ export default function Register() {
           {selectedRole === 'student' && (
             <>
               <a
-                href={`${import.meta.env.VITE_API_URL || 'https://smartcareer-api.onrender.com/api'}/auth/google`}
+                href={GOOGLE_AUTH_URL}
                 className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-800 text-surface-700 dark:text-surface-300 text-sm font-medium hover:bg-surface-50 dark:hover:bg-surface-700 transition-all mb-4"
               >
                 <svg viewBox="0 0 24 24" width="18" height="18">

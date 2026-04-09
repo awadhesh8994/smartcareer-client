@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Eye, EyeOff, Sparkles, ArrowRight, Mail, Lock, AlertCircle } from 'lucide-react'
 import { useAuthStore } from '@store/authStore'
+import { GOOGLE_AUTH_URL } from '@services/axiosInstance'
 import toast from 'react-hot-toast'
 import clsx from 'clsx'
 
@@ -123,7 +124,7 @@ export default function Login() {
 
           {/* Google OAuth */}
           <a
-            href={`${import.meta.env.VITE_API_URL || "http://localhost:5000/api"}/auth/google`}
+            href={GOOGLE_AUTH_URL}
             className="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-800 text-surface-700 dark:text-surface-300 text-sm font-medium hover:bg-surface-50 dark:hover:bg-surface-700 transition-all mb-6"
           >
             <svg viewBox="0 0 24 24" width="18" height="18">

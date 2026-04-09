@@ -297,6 +297,7 @@ export default function Interview() {
   } = useSpeechPlayback({ lang: 'en-US', rate: 0.96, pitch: 0.94, volume: 0.92 })
 
   const recordingSessionRef = useRef(false)
+  const recordingQuestionIndexRef = useRef(null)
   const baseAnswerRef = useRef('')
   const autoQuestionKeyRef = useRef('')
   const spokenFeedbackKeyRef = useRef('')
@@ -488,10 +489,20 @@ export default function Interview() {
   useEffect(() => {
     if (recordingSessionRef.current && !isListening) {
       const mergedTranscript = joinTranscriptParts(baseAnswerRef.current, finalTranscript)
-      if (mergedTranscript) setAnswer(mergedTranscript)
+
+      if (
+        mergedTranscript
+        && recordingQuestionIndexRef.current === currentQ
+        && phaseRef.current === 'interview'
+      ) {
+        setAnswer(mergedTranscript)
+      }
+
       recordingSessionRef.current = false
+      recordingQuestionIndexRef.current = null
+      baseAnswerRef.current = ''
     }
-  }, [finalTranscript, isListening])
+  }, [currentQ, finalTranscript, isListening])
 
   useEffect(() => {
     if (!isListening) {
@@ -614,6 +625,7 @@ export default function Interview() {
     setWorkspaceTab('recording')
     resetTranscript()
     baseAnswerRef.current = baseText
+    recordingQuestionIndexRef.current = currentQ
     autoSubmitPendingRef.current = false
     lastSpeechAtRef.current = null
     heardSpeechRef.current = false
@@ -626,7 +638,7 @@ export default function Interview() {
     const didStart = startListening()
     if (didStart) recordingSessionRef.current = true
     return didStart
-  }, [isRecognitionSupported, resetTranscript, startListening, stopListening, stopPlayback])
+  }, [currentQ, isRecognitionSupported, resetTranscript, startListening, stopListening, stopPlayback])
 
   const primeMicrophonePermission = useCallback(async () => {
     if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) return
@@ -878,7 +890,7 @@ export default function Interview() {
     const timeout = window.setTimeout(() => {
       autoQuestionKeyRef.current = questionKey
       spokenFeedbackKeyRef.current = ''
-      turnCleanup = playQuestionAndCaptureRef.current(currentQuestion.question, answer.trim())
+      turnCleanup = playQuestionAndCaptureRef.current(currentQuestion.question, '')
     }, QUESTION_START_DELAY_MS)
 
     return () => {
@@ -886,7 +898,6 @@ export default function Interview() {
       turnCleanup()
     }
   }, [
-    answer,
     currentQ,
     currentQuestion,
     evaluation,
@@ -911,9 +922,15 @@ export default function Interview() {
     })
   }
 
-  const stopVoiceActivity = () => {
+  const stopVoiceActivity = useCallback(() => {
     stopListening()
     stopPlayback()
+    recordingSessionRef.current = false
+    recordingQuestionIndexRef.current = null
+    autoSubmitPendingRef.current = false
+    baseAnswerRef.current = ''
+    heardSpeechRef.current = false
+    lastSpeechAtRef.current = null
     if (autoNextTimerRef.current) {
       window.clearTimeout(autoNextTimerRef.current)
       autoNextTimerRef.current = null
@@ -923,7 +940,13 @@ export default function Interview() {
       noSpeechTimerRef.current = null
     }
     setSilenceCountdown(null)
-  }
+  }, [stopListening, stopPlayback])
+
+  const resetCurrentTurnDraft = useCallback(() => {
+    stopVoiceActivity()
+    resetTranscript()
+    setAnswer('')
+  }, [resetTranscript, stopVoiceActivity])
 
   const handleReplayQuestion = () => {
     if (!currentQuestion) return
@@ -956,8 +979,7 @@ export default function Interview() {
 
     await primeMicrophonePermission()
     setLoading(true)
-    stopVoiceActivity()
-    resetTranscript()
+    resetCurrentTurnDraft()
 
     try {
       const response = await api.post('/interviews/start', { role: selectedRole, type })
@@ -1074,14 +1096,14 @@ export default function Interview() {
 
     if (isLastQuestion) {
       finalizeAfterPendingRef.current = true
-      setAnswer('')
+      resetCurrentTurnDraft()
       return
     }
 
     autoQuestionKeyRef.current = ''
     spokenFeedbackKeyRef.current = ''
+    resetCurrentTurnDraft()
     setCurrentQ((value) => value + 1)
-    setAnswer('')
     setEvaluation(null)
   }
 
@@ -1123,14 +1145,12 @@ export default function Interview() {
   }, [answer, isListening, loading])
 
   const nextQuestion = () => {
-    stopVoiceActivity()
-    resetTranscript()
+    resetCurrentTurnDraft()
     autoQuestionKeyRef.current = ''
     spokenFeedbackKeyRef.current = ''
 
     if (currentQ + 1 < questions.length) {
       setCurrentQ((value) => value + 1)
-      setAnswer('')
       setEvaluation(null)
       return
     }
@@ -1173,10 +1193,7 @@ export default function Interview() {
   }
 
   const resetInterview = () => {
-    stopVoiceActivity()
-    resetTranscript()
-    recordingSessionRef.current = false
-    baseAnswerRef.current = ''
+    resetCurrentTurnDraft()
     autoQuestionKeyRef.current = ''
     spokenFeedbackKeyRef.current = ''
     pendingSubmissionSetRef.current.clear()
@@ -1193,7 +1210,6 @@ export default function Interview() {
     setShowSessionSetup(false)
     setSessionStartedAt(null)
     setElapsedSeconds(0)
-    setAnswer('')
     setCurrentQ(0)
     setWorkspaceTab('recording')
     writeActiveInterviewSession(null)
