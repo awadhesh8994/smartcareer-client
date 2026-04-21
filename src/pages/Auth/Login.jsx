@@ -65,7 +65,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex">
       {/* Left panel */}
-      <div className="hidden lg:flex lg:w-1/2 gradient-brand-bg flex-col justify-between p-12 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 gradient-brand-bg flex-col justify-between p-20 relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-white/10" />
           <div className="absolute -bottom-32 -left-16 w-80 h-80 rounded-full bg-white/5" />
